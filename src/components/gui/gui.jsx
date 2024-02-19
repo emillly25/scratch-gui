@@ -257,7 +257,6 @@ const GUIComponent = (props) => {
                             }
                             onToggleLoginOpen={onToggleLoginOpen}
                             onTest={(isSuccess) => {
-                                console.log("tlfvo", isSuccess);
                                 setIsOpenModal({
                                     isOpen: true,
                                     type: isSuccess ? "success" : "fail",
