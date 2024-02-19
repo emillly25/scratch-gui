@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import omit from "lodash.omit";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import {
     defineMessages,
     FormattedMessage,
@@ -39,6 +39,7 @@ import layout, { STAGE_SIZE_MODES } from "../../lib/layout-constants";
 import { resolveStageSize } from "../../lib/screen-utils";
 import { themeMap } from "../../lib/themes";
 
+import catImage from "../../abook/assets/cat.png";
 import styles from "./gui.css";
 import codeIcon from "./icon--code.svg";
 import costumesIcon from "./icon--costumes.svg";
@@ -133,6 +134,8 @@ const GUIComponent = (props) => {
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
+
+    const [isTest, setIsTest] = useState(false);
 
     const tabClassNames = {
         tabs: styles.tabs,
@@ -249,7 +252,111 @@ const GUIComponent = (props) => {
                                 onStartSelectingFileUpload
                             }
                             onToggleLoginOpen={onToggleLoginOpen}
+                            onTest={() => {
+                                setIsTest(true);
+                                console.log("ㅎㅇ");
+                            }}
                         />
+                        {isTest ? (
+                            <div
+                                style={{
+                                    background: "rgba(59,59,59,0.7)",
+                                    width: "100%",
+                                    height: "100%",
+                                    position: "fixed",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    zIndex: "999",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: "400px",
+                                        height: "400px",
+                                        boxShadow:
+                                            " 0px 4px 23px 0px rgba(0, 0, 0, 0.25)",
+                                        display: "flex",
+                                        background: "var(--Grey-white, #fff)",
+                                        flexDirection: "column",
+                                        position: "absolute",
+                                        top: "50%",
+                                        left: "50%",
+                                        transform: "translate(-50%, -50%)",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            backgroundColor: "#855CD6",
+                                            height: "60px",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            padding: "0 8px",
+                                            fontWeight: 600,
+                                            color: "#FFF",
+                                            fontSize: "23px",
+                                        }}
+                                    >
+                                        <div>결과</div>
+                                        <div
+                                            style={{
+                                                fontSize: "25px",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() => {
+                                                setIsTest(false);
+                                            }}
+                                        >
+                                            X
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            height: "100%",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "space-around",
+                                            padding: "0 8px",
+                                        }}
+                                    >
+                                        <img
+                                            width="200px"
+                                            height="200px"
+                                            alt="고양이"
+                                            src={catImage}
+                                        />
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                gap: "5px",
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: "35px",
+                                                    fontWeight: "700",
+                                                }}
+                                            >
+                                                성공!
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: "20px",
+                                                    fontWeight: "500",
+                                                }}
+                                            >
+                                                오, 멋지게 해결했네요!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+
                         <Box className={styles.bodyWrapper}>
                             <Box className={styles.flexWrapper}>
                                 {/* 좌측 코드블럭 */}
