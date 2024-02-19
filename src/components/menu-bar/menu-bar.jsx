@@ -80,13 +80,13 @@ import editIcon from "./icon--edit.svg";
 import fileIcon from "./icon--file.svg";
 import remixIcon from "./icon--remix.svg";
 
+import testConnection from "../../abook/api.js";
+import sharedMessages from "../../lib/shared-messages";
 import catLogo from "./cat_logo.svg";
 import ninetiesLogo from "./nineties_logo.svg";
 import oldtimeyLogo from "./oldtimey-logo.svg";
 import prehistoricLogo from "./prehistoric-logo.svg";
 import scratchLogo from "./scratch-logo.svg";
-
-import sharedMessages from "../../lib/shared-messages";
 
 const ariaMessages = defineMessages({
     tutorials: {
@@ -942,9 +942,11 @@ class MenuBar extends React.Component {
                         backgroundColor: "red",
                         marginRight: "20px",
                     }}
-                    onClick={() => {
-                        // testConnection(this.props.vm.toJSON());
-                        this.props.onTest();
+                    onClick={async () => {
+                        const result = await testConnection(
+                            this.props.vm.toJSON()
+                        );
+                        this.props.onTest(result);
                     }}
                 >
                     !!채점!!

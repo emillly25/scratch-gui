@@ -9,6 +9,7 @@ export default async function testConnection(data) {
             },
         });
         console.log("서버로부터 받은 응답: ", res.data);
+        return res.data.isSuccess;
     } catch (error) {
         console.error("Sending data to server failed:", error);
     }
