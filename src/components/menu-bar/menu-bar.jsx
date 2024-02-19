@@ -86,6 +86,7 @@ import oldtimeyLogo from "./oldtimey-logo.svg";
 import prehistoricLogo from "./prehistoric-logo.svg";
 import scratchLogo from "./scratch-logo.svg";
 
+import testConnection from "../../abook/api.js";
 import sharedMessages from "../../lib/shared-messages";
 
 const ariaMessages = defineMessages({
@@ -943,7 +944,8 @@ class MenuBar extends React.Component {
                         marginRight: "20px",
                     }}
                     onClick={() => {
-                        console.log(this.props.vm.toJSON());
+                        testConnection(this.props.vm.toJSON());
+                        // console.log(this.props.vm.toJSON());
                     }}
                 >
                     !!채점!!
