@@ -80,6 +80,7 @@ import editIcon from "./icon--edit.svg";
 import fileIcon from "./icon--file.svg";
 import remixIcon from "./icon--remix.svg";
 
+// import testConnection from "../../abook/api.js";
 import testConnection from "../../abook/api.js";
 import sharedMessages from "../../lib/shared-messages";
 import catLogo from "./cat_logo.svg";
@@ -936,21 +937,36 @@ class MenuBar extends React.Component {
                         </React.Fragment>
                     )}
                 </div> */}
-                <div
-                    className={classNames(styles.menuBarItem, styles.hoverable)}
-                    style={{
-                        backgroundColor: "red",
-                        marginRight: "20px",
-                    }}
-                    onClick={async () => {
-                        const result = await testConnection(
-                            this.props.vm.toJSON()
-                        );
-                        this.props.onTest(result);
-                    }}
-                >
-                    !!채점!!
-                </div>
+
+                <SB3Downloader>
+                    {(className, downloadProjectCallback, getProjectSb3) => (
+                        <div
+                            className={classNames(
+                                styles.menuBarItem,
+                                styles.hoverable
+                            )}
+                            style={{
+                                backgroundColor: "red",
+                                marginRight: "20px",
+                            }}
+                            onClick={async () => {
+                                //sb3파일 다운로드
+                                const blobFile = await getProjectSb3();
+                                await testConnection(blobFile);
+
+                                // window.parent.postMessage(
+                                //     this.props.vm.toJSON(),
+                                //     "http://192.168.155.155:5173"
+                                // );
+
+                                // this.props.onTest(result);
+                                // console.log(this.props.vm.toJSON());
+                            }}
+                        >
+                            !!채점!!
+                        </div>
+                    )}
+                </SB3Downloader>
 
                 {aboutButton}
             </Box>

@@ -1,9 +1,9 @@
-import bindAll from 'lodash.bindall';
-import PropTypes from 'prop-types';
-import React from 'react';
-import {connect} from 'react-redux';
-import {projectTitleInitialState} from '../reducers/project-title';
-import downloadBlob from '../lib/download-blob';
+import bindAll from "lodash.bindall";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import downloadBlob from "../lib/download-blob";
+import { projectTitleInitialState } from "../reducers/project-title";
 /**
  * Project saver component passes a downloadProject function to its child.
  * It expects this child to be a function with the signature
@@ -19,27 +19,31 @@ import downloadBlob from '../lib/download-blob';
  * )}</SB3Downloader>
  */
 class SB3Downloader extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
-        bindAll(this, [
-            'downloadProject'
-        ]);
+        bindAll(this, ["downloadProject", "getProjectSb3"]);
     }
-    downloadProject () {
-        this.props.saveProjectSb3().then(content => {
+    downloadProject() {
+        this.props.saveProjectSb3().then((content) => {
             if (this.props.onSaveFinished) {
                 this.props.onSaveFinished();
             }
             downloadBlob(this.props.projectFilename, content);
         });
     }
-    render () {
-        const {
-            children
-        } = this.props;
+
+    getProjectSb3() {
+        return this.props.saveProjectSb3().then((content) => {
+            return content;
+        });
+    }
+
+    render() {
+        const { children } = this.props;
         return children(
             this.props.className,
-            this.downloadProject
+            this.downloadProject,
+            this.getProjectSb3
         );
     }
 }
@@ -57,15 +61,20 @@ SB3Downloader.propTypes = {
     className: PropTypes.string,
     onSaveFinished: PropTypes.func,
     projectFilename: PropTypes.string,
-    saveProjectSb3: PropTypes.func
+    saveProjectSb3: PropTypes.func,
 };
 SB3Downloader.defaultProps = {
-    className: ''
+    className: "",
 };
 
-const mapStateToProps = state => ({
-    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm),
-    projectFilename: getProjectFilename(state.scratchGui.projectTitle, projectTitleInitialState)
+const mapStateToProps = (state) => ({
+    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(
+        state.scratchGui.vm
+    ),
+    projectFilename: getProjectFilename(
+        state.scratchGui.projectTitle,
+        projectTitleInitialState
+    ),
 });
 
 export default connect(

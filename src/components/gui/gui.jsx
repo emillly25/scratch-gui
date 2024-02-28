@@ -472,10 +472,7 @@ const GUIComponent = (props) => {
                         <Box className={styles.bodyWrapper}>
                             <Box className={styles.flexWrapper}>
                                 {/* 좌측 코드블럭 */}
-                                <div
-                                    className={styles.editorWrapper}
-                                    style={{ border: "3px solid blue" }}
-                                >
+                                <div className={styles.editorWrapper}>
                                     <Box className={styles.editorWrapper}>
                                         <Tabs
                                             forceRenderTabPanel
@@ -647,7 +644,7 @@ const GUIComponent = (props) => {
                                 </div>
 
                                 {/* 우측 고양이 영역 */}
-                                <div style={{ border: "3px solid red" }}>
+                                <div>
                                     <Box
                                         className={classNames(
                                             styles.stageAndTargetWrapper,
