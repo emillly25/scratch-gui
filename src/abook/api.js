@@ -15,7 +15,7 @@ export default async function testConnection(blobData) {
     const formData = new FormData();
     formData.append("file", blobData, "example.sb3");
     try {
-        const res = await fetch("http://localhost:5000/upload", {
+        const res = await fetch("http://localhost:5001/upload", {
             method: "POST",
             body: formData,
         });

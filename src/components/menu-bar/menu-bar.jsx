@@ -82,6 +82,7 @@ import remixIcon from "./icon--remix.svg";
 
 // import testConnection from "../../abook/api.js";
 import testConnection from "../../abook/api.js";
+import getFile from "../../abook/file_api.js";
 import sharedMessages from "../../lib/shared-messages";
 import catLogo from "./cat_logo.svg";
 import ninetiesLogo from "./nineties_logo.svg";
@@ -938,6 +939,27 @@ class MenuBar extends React.Component {
                     )}
                 </div> */}
 
+                <div
+                    className={classNames(styles.menuBarItem, styles.hoverable)}
+                    style={{
+                        backgroundColor: "blue",
+                        marginRight: "20px",
+                    }}
+                    onClick={async () => {
+                        //sb3파일 불러오기
+                        // this.props.onStartSelectingFileUpload();
+                        const arrBuffer = await getFile();
+                        if (arrBuffer) {
+                            console.log("로드프로젝트!");
+                            this.props.vm.loadProject(arrBuffer);
+                            console.log("DONE");
+                        }
+                        //내부적으로 파일 업로드해서 불러와주기...
+                    }}
+                >
+                    !!불러오기!!
+                </div>
+
                 <SB3Downloader>
                     {(className, downloadProjectCallback, getProjectSb3) => (
                         <div
@@ -954,16 +976,14 @@ class MenuBar extends React.Component {
                                 const blobFile = await getProjectSb3();
                                 await testConnection(blobFile);
 
+                                //JSON ifame으로 보내기
                                 // window.parent.postMessage(
                                 //     this.props.vm.toJSON(),
                                 //     "http://192.168.155.155:5173"
                                 // );
-
-                                // this.props.onTest(result);
-                                // console.log(this.props.vm.toJSON());
                             }}
                         >
-                            !!채점!!
+                            !!파일저장!!
                         </div>
                     )}
                 </SB3Downloader>
