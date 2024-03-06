@@ -39,6 +39,8 @@ import layout, { STAGE_SIZE_MODES } from "../../lib/layout-constants";
 import { resolveStageSize } from "../../lib/screen-utils";
 import { themeMap } from "../../lib/themes";
 
+import html2canvas from "html2canvas";
+import { captureImg } from "../../abook/api.js";
 import catImage from "../../abook/assets/cat.png";
 import failCatImage from "../../abook/assets/fail.png";
 import styles from "./gui.css";
@@ -122,6 +124,7 @@ const GUIComponent = (props) => {
         onTelemetryModalCancel,
         onTelemetryModalOptIn,
         onTelemetryModalOptOut,
+        saveProjectSb3,
         showComingSoon,
         soundsTabVisible,
         stageSizeMode,
@@ -132,6 +135,7 @@ const GUIComponent = (props) => {
         vm,
         ...componentProps
     } = omit(props, "dispatch");
+
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
@@ -159,6 +163,38 @@ const GUIComponent = (props) => {
     if (isRendererSupported === null) {
         isRendererSupported = Renderer.isSupported();
     }
+
+    // window.addEventListener("message", async (event) => {
+    //     if (event.origin === "http://192.168.155.155:5173") {
+    //         if (event.data.type === "init") {
+    //             //초기 프로젝트로 로드
+    //             console.log("어레이버퍼", event.data.file);
+    //             // const arrBuffer = event.data.file;
+    //             // this.props.vm.loadProject(arrBuffer);
+    //             // console.log("DONE");
+
+    //             return;
+    //         }
+    //         if (event.data.type === "done") {
+    //             //채점
+
+    //             saveProjectSb3().then((content) => {
+    //                 console.log("채점인 경우");
+    //                 window.parent.postMessage(
+    //                     {
+    //                         data: vm.toJSON(), //jsonData
+    //                         file: content, //blobData
+    //                         img: "",
+    //                     },
+    //                     "http://192.168.155.155:5173"
+    //                 );
+    //                 return;
+    //             });
+
+    //             console.log("도대체 몇번 실행됨..?");
+    //         }
+    //     }
+    // });
 
     return (
         <MediaQuery minWidth={layout.fullSizeMinWidth}>
@@ -472,7 +508,41 @@ const GUIComponent = (props) => {
                         <Box className={styles.bodyWrapper}>
                             <Box className={styles.flexWrapper}>
                                 {/* 좌측 코드블럭 */}
-                                <div className={styles.editorWrapper}>
+                                <div
+                                    className={styles.editorWrapper}
+                                    id="capture"
+                                    style={
+                                        {
+                                            //  border: "10px solid red"
+                                        }
+                                    }
+                                >
+                                    <div
+                                        style={{
+                                            backgroundColor: "greenyellow",
+                                            width: "70px",
+                                            height: "30px",
+                                            textAlign: "center",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={async () => {
+                                            const captureDiv =
+                                                document.getElementById(
+                                                    "capture"
+                                                );
+                                            console.log("1");
+
+                                            html2canvas(captureDiv).then(
+                                                (canvas) => {
+                                                    canvas.toBlob((blob) => {
+                                                        captureImg(blob);
+                                                    });
+                                                }
+                                            );
+                                        }}
+                                    >
+                                        캡쳐
+                                    </div>
                                     <Box className={styles.editorWrapper}>
                                         <Tabs
                                             forceRenderTabPanel
@@ -553,6 +623,7 @@ const GUIComponent = (props) => {
                                             </TabList>
 
                                             {/*코드탭 panel*/}
+
                                             <TabPanel
                                                 className={
                                                     tabClassNames.tabPanel
@@ -563,6 +634,7 @@ const GUIComponent = (props) => {
                                                         styles.blocksWrapper
                                                     }
                                                 >
+                                                    {/* 실습 코드블럭 */}
                                                     <Blocks
                                                         key={`${blocksId}/${theme}`}
                                                         canUseCloud={
@@ -580,6 +652,7 @@ const GUIComponent = (props) => {
                                                         vm={vm}
                                                     />
                                                 </Box>
+
                                                 {/*extension버튼*/}
                                                 <Box
                                                     className={
@@ -736,6 +809,7 @@ GUIComponent.propTypes = {
     onTelemetryModalOptOut: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
     renderLogin: PropTypes.func,
+    saveProjectSb3: PropTypes.func,
     showComingSoon: PropTypes.bool,
     soundsTabVisible: PropTypes.bool,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
@@ -743,6 +817,7 @@ GUIComponent.propTypes = {
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.string,
     tipsLibraryVisible: PropTypes.bool,
+
     vm: PropTypes.instanceOf(VM).isRequired,
 };
 GUIComponent.defaultProps = {
@@ -754,13 +829,11 @@ GUIComponent.defaultProps = {
     //menu-bar의 설정
     canChangeLanguage: true,
     canChangeTheme: true,
-
     //menu-bar의 파일
     canManageFiles: true,
     canRemix: false, //사용안함
     canCreateNew: false, //사용안함
     canSave: true, //??
-
     canEditTitle: false,
     canShare: false,
     canUseCloud: false,
@@ -778,6 +851,9 @@ const mapStateToProps = (state) => ({
     blocksId: state.scratchGui.timeTravel.year.toString(),
     stageSizeMode: state.scratchGui.stageSize.stageSize,
     theme: state.scratchGui.theme.theme,
+    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(
+        state.scratchGui.vm
+    ),
 });
 
 export default injectIntl(connect(mapStateToProps)(GUIComponent));

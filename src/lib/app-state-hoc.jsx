@@ -1,15 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Provider} from 'react-redux';
-import {createStore, combineReducers, compose} from 'redux';
-import ConnectedIntlProvider from './connected-intl-provider.jsx';
+import PropTypes from "prop-types";
+import React from "react";
+import { Provider } from "react-redux";
+import { combineReducers, compose, createStore } from "redux";
+import ConnectedIntlProvider from "./connected-intl-provider.jsx";
 
-import localesReducer, {initLocale, localesInitialState} from '../reducers/locales';
+import localesReducer, {
+    initLocale,
+    localesInitialState,
+} from "../reducers/locales";
 
-import {setPlayer, setFullScreen} from '../reducers/mode.js';
+import { setFullScreen, setPlayer } from "../reducers/mode.js";
 
-import locales from 'scratch-l10n';
-import {detectLocale} from './detect-locale';
+import locales from "scratch-l10n";
+import { detectLocale } from "./detect-locale";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -24,7 +27,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
  */
 const AppStateHOC = function (WrappedComponent, localesOnly) {
     class AppStateWrapper extends React.Component {
-        constructor (props) {
+        constructor(props) {
             super(props);
             let initialState = {};
             let reducers = {};
@@ -32,28 +35,28 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
 
             let initializedLocales = localesInitialState;
             const locale = detectLocale(Object.keys(locales));
-            if (locale !== 'en') {
+            if (locale !== "en") {
                 initializedLocales = initLocale(initializedLocales, locale);
             }
             if (localesOnly) {
                 // Used for instantiating minimal state for the unsupported
                 // browser modal
-                reducers = {locales: localesReducer};
-                initialState = {locales: initializedLocales};
+                reducers = { locales: localesReducer };
+                initialState = { locales: initializedLocales };
                 enhancer = composeEnhancers();
             } else {
                 // You are right, this is gross. But it's necessary to avoid
                 // importing unneeded code that will crash unsupported browsers.
-                const guiRedux = require('../reducers/gui');
+                const guiRedux = require("../reducers/gui");
                 const guiReducer = guiRedux.default;
                 const {
                     guiInitialState,
                     guiMiddleware,
                     initFullScreen,
                     initPlayer,
-                    initTelemetryModal
+                    initTelemetryModal,
                 } = guiRedux;
-                const {ScratchPaintReducer} = require('scratch-paint');
+                const { ScratchPaintReducer } = require("scratch-paint");
 
                 let initializedGui = guiInitialState;
                 if (props.isFullScreen || props.isPlayerOnly) {
@@ -69,22 +72,18 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                 reducers = {
                     locales: localesReducer,
                     scratchGui: guiReducer,
-                    scratchPaint: ScratchPaintReducer
+                    scratchPaint: ScratchPaintReducer,
                 };
                 initialState = {
                     locales: initializedLocales,
-                    scratchGui: initializedGui
+                    scratchGui: initializedGui,
                 };
                 enhancer = composeEnhancers(guiMiddleware);
             }
             const reducer = combineReducers(reducers);
-            this.store = createStore(
-                reducer,
-                initialState,
-                enhancer
-            );
+            this.store = createStore(reducer, initialState, enhancer);
         }
-        componentDidUpdate (prevProps) {
+        componentDidUpdate(prevProps) {
             if (localesOnly) return;
             if (prevProps.isPlayerOnly !== this.props.isPlayerOnly) {
                 this.store.dispatch(setPlayer(this.props.isPlayerOnly));
@@ -93,19 +92,50 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                 this.store.dispatch(setFullScreen(this.props.isFullScreen));
             }
         }
-        render () {
+        render() {
             const {
                 isFullScreen, // eslint-disable-line no-unused-vars
                 isPlayerOnly, // eslint-disable-line no-unused-vars
                 showTelemetryModal, // eslint-disable-line no-unused-vars
                 ...componentProps
             } = this.props;
+
+            window.addEventListener("message", async (event) => {
+                if (event.origin === "http://192.168.155.155:5173") {
+                    if (event.data.type === "init") {
+                        //초기 프로젝트로 로드
+                        const blockData = event.data.blockData;
+                        console.log(
+                            "스크래치: ㅇㅇ 처음 프로젝트 시작이얌",
+                            blockData
+                        );
+
+                        this.store
+                            .getState()
+                            .scratchGui.vm.loadProject(blockData);
+
+                        return;
+                    }
+                    if (event.data.type === "done") {
+                        //채점
+                        console.log("스크래치: 응그래 다했니 니파일 정보 드림");
+                        window.parent.postMessage(
+                            {
+                                data: this.store
+                                    .getState()
+                                    .scratchGui.vm.toJSON(), //jsonData
+                                img: "",
+                            },
+                            "http://192.168.155.155:5173"
+                        );
+                    }
+                }
+            });
+
             return (
                 <Provider store={this.store}>
                     <ConnectedIntlProvider>
-                        <WrappedComponent
-                            {...componentProps}
-                        />
+                        <WrappedComponent {...componentProps} />
                     </ConnectedIntlProvider>
                 </Provider>
             );
@@ -115,7 +145,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
         isFullScreen: PropTypes.bool,
         isPlayerOnly: PropTypes.bool,
         isTelemetryEnabled: PropTypes.bool,
-        showTelemetryModal: PropTypes.bool
+        showTelemetryModal: PropTypes.bool,
     };
     return AppStateWrapper;
 };

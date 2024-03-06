@@ -80,9 +80,6 @@ import editIcon from "./icon--edit.svg";
 import fileIcon from "./icon--file.svg";
 import remixIcon from "./icon--remix.svg";
 
-// import testConnection from "../../abook/api.js";
-import testConnection from "../../abook/api.js";
-import getFile from "../../abook/file_api.js";
 import sharedMessages from "../../lib/shared-messages";
 import catLogo from "./cat_logo.svg";
 import ninetiesLogo from "./nineties_logo.svg";
@@ -939,7 +936,7 @@ class MenuBar extends React.Component {
                     )}
                 </div> */}
 
-                <div
+                {/* <div
                     className={classNames(styles.menuBarItem, styles.hoverable)}
                     style={{
                         backgroundColor: "blue",
@@ -947,20 +944,18 @@ class MenuBar extends React.Component {
                     }}
                     onClick={async () => {
                         //sb3파일 불러오기
-                        // this.props.onStartSelectingFileUpload();
                         const arrBuffer = await getFile();
                         if (arrBuffer) {
                             console.log("로드프로젝트!");
                             this.props.vm.loadProject(arrBuffer);
                             console.log("DONE");
                         }
-                        //내부적으로 파일 업로드해서 불러와주기...
                     }}
                 >
                     !!불러오기!!
-                </div>
+                </div> */}
 
-                <SB3Downloader>
+                {/* <SB3Downloader>
                     {(className, downloadProjectCallback, getProjectSb3) => (
                         <div
                             className={classNames(
@@ -986,7 +981,7 @@ class MenuBar extends React.Component {
                             !!파일저장!!
                         </div>
                     )}
-                </SB3Downloader>
+                </SB3Downloader> */}
 
                 {aboutButton}
             </Box>

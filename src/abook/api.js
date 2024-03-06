@@ -11,7 +11,7 @@
 //     }
 // }
 
-export default async function testConnection(blobData) {
+export async function testConnection(blobData) {
     const formData = new FormData();
     formData.append("file", blobData, "example.sb3");
     try {
@@ -26,6 +26,50 @@ export default async function testConnection(blobData) {
         } else {
             console.error("Upload failed.");
         }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export async function getFile() {
+    try {
+        const res = await fetch("http://localhost:5001/file", {
+            method: "GET",
+            type: "application/x.scratch.sb3",
+        });
+        const blob = await res.blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        return arrayBuffer;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export async function captureImg(blobData) {
+    const formData = new FormData();
+    formData.append("capture", blobData, "capture.png");
+    try {
+        const res = await fetch("http://localhost:5001/capture", {
+            method: "POST",
+            body: formData,
+        });
+
+        console.log("캡쳐 res", res);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export async function getCapturedImg() {
+    try {
+        const res = await fetch("http://localhost:5001/img", {
+            method: "GET",
+            type: "image/png",
+        });
+        const blob = await res.blob();
+        const objectURL = URL.createObjectURL(blob);
+        console.log("캡쳐이미지 ", objectURL);
+        return objectURL;
     } catch (error) {
         console.error("Error:", error);
     }
