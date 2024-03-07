@@ -11,6 +11,7 @@ import localesReducer, {
 
 import { setFullScreen, setPlayer } from "../reducers/mode.js";
 
+import html2canvas from "html2canvas";
 import locales from "scratch-l10n";
 import { detectLocale } from "./detect-locale";
 
@@ -109,25 +110,32 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                             "스크래치: ㅇㅇ 처음 프로젝트 시작이얌",
                             blockData
                         );
-
-                        this.store
-                            .getState()
-                            .scratchGui.vm.loadProject(blockData);
+                        //TODO 블록데이터 null처리 (초기값)
+                        if (blockData !== null) {
+                            this.store
+                                .getState()
+                                .scratchGui.vm.loadProject(blockData);
+                        }
 
                         return;
                     }
                     if (event.data.type === "done") {
                         //채점
                         console.log("스크래치: 응그래 다했니 니파일 정보 드림");
-                        window.parent.postMessage(
-                            {
-                                data: this.store
-                                    .getState()
-                                    .scratchGui.vm.toJSON(), //jsonData
-                                img: "",
-                            },
-                            "http://192.168.155.155:5173"
-                        );
+                        const captureDiv = document.getElementById("capture");
+                        html2canvas(captureDiv).then((canvas) => {
+                            canvas.toBlob((blob) => {
+                                window.parent.postMessage(
+                                    {
+                                        data: this.store
+                                            .getState()
+                                            .scratchGui.vm.toJSON(), //jsonData
+                                        img: blob,
+                                    },
+                                    "http://192.168.155.155:5173"
+                                );
+                            });
+                        });
                     }
                 }
             });

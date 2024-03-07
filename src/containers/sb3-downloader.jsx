@@ -21,7 +21,7 @@ import { projectTitleInitialState } from "../reducers/project-title";
 class SB3Downloader extends React.Component {
     constructor(props) {
         super(props);
-        bindAll(this, ["downloadProject", "getProjectSb3"]);
+        bindAll(this, ["downloadProject"]);
     }
     downloadProject() {
         this.props.saveProjectSb3().then((content) => {
@@ -32,19 +32,9 @@ class SB3Downloader extends React.Component {
         });
     }
 
-    getProjectSb3() {
-        return this.props.saveProjectSb3().then((content) => {
-            return content;
-        });
-    }
-
     render() {
         const { children } = this.props;
-        return children(
-            this.props.className,
-            this.downloadProject,
-            this.getProjectSb3
-        );
+        return children(this.props.className, this.downloadProject);
     }
 }
 
@@ -61,16 +51,12 @@ SB3Downloader.propTypes = {
     className: PropTypes.string,
     onSaveFinished: PropTypes.func,
     projectFilename: PropTypes.string,
-    saveProjectSb3: PropTypes.func,
 };
 SB3Downloader.defaultProps = {
     className: "",
 };
 
 const mapStateToProps = (state) => ({
-    saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(
-        state.scratchGui.vm
-    ),
     projectFilename: getProjectFilename(
         state.scratchGui.projectTitle,
         projectTitleInitialState

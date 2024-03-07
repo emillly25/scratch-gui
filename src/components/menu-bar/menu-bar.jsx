@@ -14,14 +14,10 @@ import { compose } from "redux";
 
 import VM from "scratch-vm";
 
-import DeletionRestorer from "../../containers/deletion-restorer.jsx";
 import MenuBarHOC from "../../containers/menu-bar-hoc.jsx";
-import SB3Downloader from "../../containers/sb3-downloader.jsx";
-import TurboMode from "../../containers/turbo-mode.jsx";
 import Box from "../box/box.jsx";
 import Button from "../button/button.jsx";
 import { ComingSoonTooltip } from "../coming-soon/coming-soon.jsx";
-import Divider from "../divider/divider.jsx";
 import { MenuItem, MenuSection } from "../menu/menu.jsx";
 import MenuBarMenu from "./menu-bar-menu.jsx";
 import SettingsMenu from "./settings-menu.jsx";
@@ -74,10 +70,7 @@ import collectMetadata from "../../lib/collect-metadata";
 import styles from "./menu-bar.css";
 
 import helpIcon from "../../lib/assets/icon--tutorials.svg";
-import dropdownCaret from "./dropdown-caret.svg";
 import aboutIcon from "./icon--about.svg";
-import editIcon from "./icon--edit.svg";
-import fileIcon from "./icon--file.svg";
 import remixIcon from "./icon--remix.svg";
 
 import sharedMessages from "../../lib/shared-messages";
@@ -446,7 +439,9 @@ class MenuBar extends React.Component {
                                 settingsMenuOpen={this.props.settingsMenuOpen}
                             />
                         )}
-                        {this.props.canManageFiles && (
+
+                        {/* 파일 */}
+                        {/* {this.props.canManageFiles && (
                             <div
                                 className={classNames(
                                     styles.menuBarItem,
@@ -553,8 +548,10 @@ class MenuBar extends React.Component {
                                     </MenuSection>
                                 </MenuBarMenu>
                             </div>
-                        )}
-                        <div
+                        )} */}
+
+                        {/* 편집(터보모드) */}
+                        {/* <div
                             className={classNames(
                                 styles.menuBarItem,
                                 styles.hoverable,
@@ -620,7 +617,7 @@ class MenuBar extends React.Component {
                                     </TurboMode>
                                 </MenuSection>
                             </MenuBarMenu>
-                        </div>
+                        </div> */}
                         {this.props.isTotallyNormal && (
                             <div
                                 className={classNames(
@@ -777,7 +774,10 @@ class MenuBar extends React.Component {
                             []
                         )}
                     </div> */}
-                    <Divider className={classNames(styles.divider)} />
+                    {/* 경계선 */}
+                    {/* <Divider className={classNames(styles.divider)} /> */}
+
+                    {/* 튜토리얼 */}
                     <div className={styles.fileGroup}>
                         <div
                             aria-label={this.props.intl.formatMessage(
@@ -935,53 +935,6 @@ class MenuBar extends React.Component {
                         </React.Fragment>
                     )}
                 </div> */}
-
-                {/* <div
-                    className={classNames(styles.menuBarItem, styles.hoverable)}
-                    style={{
-                        backgroundColor: "blue",
-                        marginRight: "20px",
-                    }}
-                    onClick={async () => {
-                        //sb3파일 불러오기
-                        const arrBuffer = await getFile();
-                        if (arrBuffer) {
-                            console.log("로드프로젝트!");
-                            this.props.vm.loadProject(arrBuffer);
-                            console.log("DONE");
-                        }
-                    }}
-                >
-                    !!불러오기!!
-                </div> */}
-
-                {/* <SB3Downloader>
-                    {(className, downloadProjectCallback, getProjectSb3) => (
-                        <div
-                            className={classNames(
-                                styles.menuBarItem,
-                                styles.hoverable
-                            )}
-                            style={{
-                                backgroundColor: "red",
-                                marginRight: "20px",
-                            }}
-                            onClick={async () => {
-                                //sb3파일 다운로드
-                                const blobFile = await getProjectSb3();
-                                await testConnection(blobFile);
-
-                                //JSON ifame으로 보내기
-                                // window.parent.postMessage(
-                                //     this.props.vm.toJSON(),
-                                //     "http://192.168.155.155:5173"
-                                // );
-                            }}
-                        >
-                            !!파일저장!!
-                        </div>
-                    )}
-                </SB3Downloader> */}
 
                 {aboutButton}
             </Box>

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import omit from "lodash.omit";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 import {
     defineMessages,
     FormattedMessage,
@@ -39,10 +39,6 @@ import layout, { STAGE_SIZE_MODES } from "../../lib/layout-constants";
 import { resolveStageSize } from "../../lib/screen-utils";
 import { themeMap } from "../../lib/themes";
 
-import html2canvas from "html2canvas";
-import { captureImg } from "../../abook/api.js";
-import catImage from "../../abook/assets/cat.png";
-import failCatImage from "../../abook/assets/fail.png";
 import styles from "./gui.css";
 import codeIcon from "./icon--code.svg";
 import costumesIcon from "./icon--costumes.svg";
@@ -140,11 +136,6 @@ const GUIComponent = (props) => {
         return <Box {...componentProps}>{children}</Box>;
     }
 
-    const [isOpenModal, setIsOpenModal] = useState({
-        isOpen: false,
-        type: null,
-    });
-
     const tabClassNames = {
         tabs: styles.tabs,
         tab: classNames(tabStyles.reactTabsTab, styles.tab),
@@ -163,38 +154,6 @@ const GUIComponent = (props) => {
     if (isRendererSupported === null) {
         isRendererSupported = Renderer.isSupported();
     }
-
-    // window.addEventListener("message", async (event) => {
-    //     if (event.origin === "http://192.168.155.155:5173") {
-    //         if (event.data.type === "init") {
-    //             //초기 프로젝트로 로드
-    //             console.log("어레이버퍼", event.data.file);
-    //             // const arrBuffer = event.data.file;
-    //             // this.props.vm.loadProject(arrBuffer);
-    //             // console.log("DONE");
-
-    //             return;
-    //         }
-    //         if (event.data.type === "done") {
-    //             //채점
-
-    //             saveProjectSb3().then((content) => {
-    //                 console.log("채점인 경우");
-    //                 window.parent.postMessage(
-    //                     {
-    //                         data: vm.toJSON(), //jsonData
-    //                         file: content, //blobData
-    //                         img: "",
-    //                     },
-    //                     "http://192.168.155.155:5173"
-    //                 );
-    //                 return;
-    //             });
-
-    //             console.log("도대체 몇번 실행됨..?");
-    //         }
-    //     }
-    // });
 
     return (
         <MediaQuery minWidth={layout.fullSizeMinWidth}>
@@ -292,218 +251,7 @@ const GUIComponent = (props) => {
                                 onStartSelectingFileUpload
                             }
                             onToggleLoginOpen={onToggleLoginOpen}
-                            onTest={(isSuccess) => {
-                                setIsOpenModal({
-                                    isOpen: true,
-                                    type: isSuccess ? "success" : "fail",
-                                });
-                            }}
                         />
-                        {isOpenModal.isOpen &&
-                        isOpenModal.type === "success" ? (
-                            <div
-                                style={{
-                                    background: "rgba(59,59,59,0.7)",
-                                    width: "100%",
-                                    height: "100%",
-                                    position: "fixed",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    zIndex: "999",
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: "400px",
-                                        height: "400px",
-                                        boxShadow:
-                                            " 0px 4px 23px 0px rgba(0, 0, 0, 0.25)",
-                                        display: "flex",
-                                        background: "var(--Grey-white, #fff)",
-                                        flexDirection: "column",
-                                        position: "absolute",
-                                        top: "50%",
-                                        left: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            backgroundColor: "#855CD6",
-                                            height: "60px",
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                            padding: "0 8px",
-                                            fontWeight: 600,
-                                            color: "#FFF",
-                                            fontSize: "23px",
-                                        }}
-                                    >
-                                        <div>결과</div>
-                                        <div
-                                            style={{
-                                                fontSize: "25px",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                setIsOpenModal({
-                                                    isOpen: false,
-                                                    type: null,
-                                                });
-                                            }}
-                                        >
-                                            X
-                                        </div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            height: "100%",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            justifyContent: "space-around",
-                                            padding: "0 8px",
-                                        }}
-                                    >
-                                        <img
-                                            width="200px"
-                                            height="200px"
-                                            alt="고양이"
-                                            src={catImage}
-                                        />
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                gap: "5px",
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    fontSize: "35px",
-                                                    fontWeight: "700",
-                                                }}
-                                            >
-                                                성공!
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "500",
-                                                }}
-                                            >
-                                                오, 멋지게 해결했네요!
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : isOpenModal.isOpen &&
-                          isOpenModal.type === "fail" ? (
-                            <div
-                                style={{
-                                    background: "rgba(59,59,59,0.7)",
-                                    width: "100%",
-                                    height: "100%",
-                                    position: "fixed",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                    zIndex: "999",
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: "400px",
-                                        height: "400px",
-                                        boxShadow:
-                                            " 0px 4px 23px 0px rgba(0, 0, 0, 0.25)",
-                                        display: "flex",
-                                        background: "var(--Grey-white, #fff)",
-                                        flexDirection: "column",
-                                        position: "absolute",
-                                        top: "50%",
-                                        left: "50%",
-                                        transform: "translate(-50%, -50%)",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            backgroundColor: "#855CD6",
-                                            height: "60px",
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                            padding: "0 8px",
-                                            fontWeight: 600,
-                                            color: "#FFF",
-                                            fontSize: "23px",
-                                        }}
-                                    >
-                                        <div>결과</div>
-                                        <div
-                                            style={{
-                                                fontSize: "25px",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                                setIsOpenModal({
-                                                    isOpen: false,
-                                                    type: null,
-                                                });
-                                            }}
-                                        >
-                                            X
-                                        </div>
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            height: "100%",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            justifyContent: "space-around",
-                                            padding: "0 8px",
-                                        }}
-                                    >
-                                        <img
-                                            width="200px"
-                                            height="200px"
-                                            alt="고양이"
-                                            src={failCatImage}
-                                        />
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                alignItems: "center",
-                                                gap: "5px",
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    fontSize: "35px",
-                                                    fontWeight: "700",
-                                                }}
-                                            >
-                                                실패!
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: "20px",
-                                                    fontWeight: "500",
-                                                }}
-                                            >
-                                                다시한번 풀어보세요!
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : null}
 
                         <Box className={styles.bodyWrapper}>
                             <Box className={styles.flexWrapper}>
@@ -511,38 +259,7 @@ const GUIComponent = (props) => {
                                 <div
                                     className={styles.editorWrapper}
                                     id="capture"
-                                    style={
-                                        {
-                                            //  border: "10px solid red"
-                                        }
-                                    }
                                 >
-                                    <div
-                                        style={{
-                                            backgroundColor: "greenyellow",
-                                            width: "70px",
-                                            height: "30px",
-                                            textAlign: "center",
-                                            cursor: "pointer",
-                                        }}
-                                        onClick={async () => {
-                                            const captureDiv =
-                                                document.getElementById(
-                                                    "capture"
-                                                );
-                                            console.log("1");
-
-                                            html2canvas(captureDiv).then(
-                                                (canvas) => {
-                                                    canvas.toBlob((blob) => {
-                                                        captureImg(blob);
-                                                    });
-                                                }
-                                            );
-                                        }}
-                                    >
-                                        캡쳐
-                                    </div>
                                     <Box className={styles.editorWrapper}>
                                         <Tabs
                                             forceRenderTabPanel
