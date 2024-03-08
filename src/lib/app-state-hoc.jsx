@@ -120,6 +120,21 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
 
                         return;
                     }
+
+                    if (event.data.type === "save") {
+                        //임시저장
+                        console.log("스크래치: 응그래 지금까지 한거 파일 드림");
+                        window.parent.postMessage(
+                            {
+                                data: this.store
+                                    .getState()
+                                    .scratchGui.vm.toJSON(), //jsonData
+                                img: "",
+                                isDone: false,
+                            },
+                            "http://192.168.155.155:5173"
+                        );
+                    }
                     if (event.data.type === "done") {
                         //채점
                         console.log("스크래치: 응그래 다했니 니파일 정보 드림");
@@ -132,6 +147,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                                             .getState()
                                             .scratchGui.vm.toJSON(), //jsonData
                                         img: blob,
+                                        isDone: true,
                                     },
                                     "http://192.168.155.155:5173"
                                 );
