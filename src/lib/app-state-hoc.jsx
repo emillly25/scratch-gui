@@ -102,6 +102,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             } = this.props;
 
             window.addEventListener("message", async (event) => {
+                console.log("부모 도메인", event.origin);
                 if (event.origin === "http://192.168.155.155:5173") {
                     if (event.data.type === "init") {
                         //초기 프로젝트로 로드
