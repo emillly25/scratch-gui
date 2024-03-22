@@ -14,10 +14,14 @@ import { compose } from "redux";
 
 import VM from "scratch-vm";
 
+import DeletionRestorer from "../../containers/deletion-restorer.jsx";
 import MenuBarHOC from "../../containers/menu-bar-hoc.jsx";
+import SB3Downloader from "../../containers/sb3-downloader.jsx";
+import TurboMode from "../../containers/turbo-mode.jsx";
 import Box from "../box/box.jsx";
 import Button from "../button/button.jsx";
 import { ComingSoonTooltip } from "../coming-soon/coming-soon.jsx";
+import Divider from "../divider/divider.jsx";
 import { MenuItem, MenuSection } from "../menu/menu.jsx";
 import MenuBarMenu from "./menu-bar-menu.jsx";
 import SettingsMenu from "./settings-menu.jsx";
@@ -70,7 +74,10 @@ import collectMetadata from "../../lib/collect-metadata";
 import styles from "./menu-bar.css";
 
 import helpIcon from "../../lib/assets/icon--tutorials.svg";
+import dropdownCaret from "./dropdown-caret.svg";
 import aboutIcon from "./icon--about.svg";
+import editIcon from "./icon--edit.svg";
+import fileIcon from "./icon--file.svg";
 import remixIcon from "./icon--remix.svg";
 
 import sharedMessages from "../../lib/shared-messages";
@@ -79,7 +86,6 @@ import ninetiesLogo from "./nineties_logo.svg";
 import oldtimeyLogo from "./oldtimey-logo.svg";
 import prehistoricLogo from "./prehistoric-logo.svg";
 import scratchLogo from "./scratch-logo.svg";
-
 const ariaMessages = defineMessages({
     tutorials: {
         id: "gui.menuBar.tutorialsLibrary",
@@ -409,7 +415,10 @@ class MenuBar extends React.Component {
         // Show the About button only if we have a handler for it (like in the desktop app)
         const aboutButton = this.buildAboutMenu(this.props.onClickAbout);
         return (
-            <Box className={classNames(this.props.className, styles.menuBar)}>
+            <Box
+                className={classNames(this.props.className, styles.menuBar)}
+                style={{ border: "5px solid lime" }}
+            >
                 <div className={styles.mainMenu}>
                     <div className={styles.fileGroup}>
                         <div className={classNames(styles.menuBarItem)}>
@@ -441,7 +450,7 @@ class MenuBar extends React.Component {
                         )}
 
                         {/* 파일 */}
-                        {/* {this.props.canManageFiles && (
+                        {this.props.canManageFiles && (
                             <div
                                 className={classNames(
                                     styles.menuBarItem,
@@ -548,10 +557,10 @@ class MenuBar extends React.Component {
                                     </MenuSection>
                                 </MenuBarMenu>
                             </div>
-                        )} */}
+                        )}
 
                         {/* 편집(터보모드) */}
-                        {/* <div
+                        <div
                             className={classNames(
                                 styles.menuBarItem,
                                 styles.hoverable,
@@ -617,7 +626,7 @@ class MenuBar extends React.Component {
                                     </TurboMode>
                                 </MenuSection>
                             </MenuBarMenu>
-                        </div> */}
+                        </div>
                         {this.props.isTotallyNormal && (
                             <div
                                 className={classNames(
@@ -775,7 +784,7 @@ class MenuBar extends React.Component {
                         )}
                     </div> */}
                     {/* 경계선 */}
-                    {/* <Divider className={classNames(styles.divider)} /> */}
+                    <Divider className={classNames(styles.divider)} />
 
                     {/* 튜토리얼 */}
                     <div className={styles.fileGroup}>
@@ -795,6 +804,13 @@ class MenuBar extends React.Component {
                             </span>
                         </div>
                     </div>
+                    <button
+                        onClick={() => {
+                            console.log(this.props.vm.toJSON());
+                        }}
+                    >
+                        export
+                    </button>
                 </div>
 
                 {/* show the proper UI in the account menu, given whether the user is

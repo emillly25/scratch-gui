@@ -217,6 +217,7 @@ const GUIComponent = (props) => {
                                 onRequestClose={onRequestCloseBackdropLibrary}
                             />
                         ) : null}
+                        {/* 상단 메뉴바 영역 */}
                         <MenuBar
                             accountNavOpen={accountNavOpen}
                             authorId={authorId}
@@ -259,6 +260,7 @@ const GUIComponent = (props) => {
                                 <div
                                     className={styles.editorWrapper}
                                     id="capture"
+                                    // style={{ border: "5px solid blue" }}
                                 >
                                     <Box className={styles.editorWrapper}>
                                         <Tabs
@@ -277,6 +279,9 @@ const GUIComponent = (props) => {
                                                 className={
                                                     tabClassNames.tabList
                                                 }
+                                                style={{
+                                                    border: "5px solid pink",
+                                                }}
                                             >
                                                 <Tab
                                                     className={
@@ -346,10 +351,14 @@ const GUIComponent = (props) => {
                                                     tabClassNames.tabPanel
                                                 }
                                             >
+                                                {/* 상위 탭 제외 실습영역 */}
                                                 <Box
                                                     className={
                                                         styles.blocksWrapper
                                                     }
+                                                    style={{
+                                                        border: "7px solid yellow",
+                                                    }}
                                                 >
                                                     {/* 실습 코드블럭 */}
                                                     <Blocks
@@ -399,7 +408,6 @@ const GUIComponent = (props) => {
                                                     </button>
                                                 </Box>
 
-                                                {/*실습stage*/}
                                                 <Box
                                                     className={styles.watermark}
                                                 >
@@ -434,7 +442,7 @@ const GUIComponent = (props) => {
                                 </div>
 
                                 {/* 우측 고양이 영역 */}
-                                <div>
+                                <div style={{ border: "5px solid red" }}>
                                     <Box
                                         className={classNames(
                                             styles.stageAndTargetWrapper,

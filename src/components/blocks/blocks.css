@@ -7,7 +7,7 @@
 }
 
 .drag-over:after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -18,7 +18,7 @@
     transition: all 0.25s ease;
 }
 
-.blocks :global(.injectionDiv){
+.blocks :global(.injectionDiv) {
     position: absolute;
     top: 0;
     right: 0;
@@ -45,6 +45,9 @@
     border-bottom: 1px solid $ui-black-transparent;
     box-sizing: content-box;
     height: calc(100% - 3.25rem) !important;
+    /*블록 탭 영역*/
+    /* border: 10px solid lime;
+    display: none; */
 
     /*
         For now, the layout cannot support scrollbars in the category menu.
@@ -67,6 +70,9 @@
 .blocks :global(.blocklyFlyout) {
     border-right: 1px solid $ui-black-transparent;
     box-sizing: content-box;
+    /*블록 영역*/
+    /* background-color: lime;
+    display: none !important; */
 }
 
 [dir="rtl"] .blocks :global(.blocklyFlyout) {
@@ -74,6 +80,10 @@
     border-left: 1px solid $ui-black-transparent;
 }
 
+/*블록 스크롤 영역*/
+/* .blocks :global(.blocklyScrollbarVertical) {
+    display: none !important;
+} */
 
 .blocks :global(.blocklyBlockDragSurface) {
     /*
